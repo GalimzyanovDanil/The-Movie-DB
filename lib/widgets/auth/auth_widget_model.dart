@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:the_movie_db/domain/api_client/api_client.dart';
 import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
@@ -47,8 +51,43 @@ class AuthModel extends ChangeNotifier {
     try {
       _sessionId =
           await _apiClient.authRequest(username: username, password: password);
+    } on DioError catch (e) {
+      switch (e.type) {
+        case DioErrorType.connectTimeout:
+          _errorMessage = _ErrorMessage.network;
+          break;
+        case DioErrorType.sendTimeout:
+          _errorMessage = _ErrorMessage.network;
+          break;
+        case DioErrorType.receiveTimeout:
+          _errorMessage = _ErrorMessage.network;
+          break;
+        case DioErrorType.response:
+          final _data = e.response?.data as Map<String, dynamic>?;
+          final int _statusCode;
+          _data != null
+              ? _statusCode = _data['status_code'] as int
+              : _statusCode = 0;
+
+          if (_statusCode == 30 || _statusCode == 32) {
+            _errorMessage = _ErrorMessage.auth;
+          } else {
+            _errorMessage = _ErrorMessage.other;
+          }
+          break;
+        case DioErrorType.cancel:
+          _errorMessage = _ErrorMessage.other;
+          break;
+        case DioErrorType.other:
+          if (e.error is SocketException) {
+            _errorMessage = _ErrorMessage.network;
+          } else {
+            _errorMessage = _ErrorMessage.other;
+          }
+          break;
+      }
     } catch (e) {
-      _errorMessage = 'Неправильный логин или пароль!';
+      _errorMessage = _ErrorMessage.other;
     }
     _isAuthActive = false;
 
@@ -61,3 +100,14 @@ class AuthModel extends ChangeNotifier {
   }
 }
 
+class _ErrorMessage {
+  static const network = 'Ошибка подключения. Проверьте интернет соединение';
+  static const auth = 'Неверный логин или пароль!';
+  static const other = 'Произошла ошибка. Попробуйте повторить';
+}
+
+/*
+30 - password or email error
+32 - email not veryfied
+
+*/
