@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:the_movie_db/library/widgets/inherited/provider.dart';
 import 'package:the_movie_db/widgets/auth/auth_widget.dart';
 import 'package:the_movie_db/widgets/auth/auth_widget_model.dart';
+import 'package:the_movie_db/widgets/main_screen/main_screen_model.dart';
 import 'package:the_movie_db/widgets/main_screen/main_screen_widget.dart';
 import 'package:the_movie_db/widgets/movie_details/movie_details_widget.dart';
 
@@ -18,7 +19,10 @@ class MainNavigation {
           model: AuthModel(),
           child: const AuthWidget(),
         ),
-    MainNavigationRouteNames.main: (context) => const MainScreenWidget(),
+    MainNavigationRouteNames.main: (context) => NotifierProvider(
+          model: MainScreenModel(),
+          child: const MainScreenWidget(),
+        ),
   };
 
   String setInitialRoute(bool isAuth) {

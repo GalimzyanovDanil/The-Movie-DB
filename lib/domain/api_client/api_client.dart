@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:the_movie_db/domain/entity/popular_movies/popular_movies.dart';
 
 // enum ApiClientExceptionType { network, auth, other }
 
@@ -12,8 +13,12 @@ import 'package:dio/dio.dart';
 
 class ApiClient {
   static const _host = 'https://api.themoviedb.org/3';
-  static const _imageUrl = 'https://image.tmdb.org/t/p/w500/';
+  static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
   static const _apiKey = 'b593c6b73d3038c9c91fa46b4acad05d';
+
+  static String createPosterPath(String posterPath) {
+    return _imageUrl + posterPath;
+  }
 
   final _dio = Dio();
 
@@ -33,6 +38,7 @@ class ApiClient {
   Future<String> _getToken() async {
     const String path = '/authentication/token/new';
     Uri uri = _makeUri(path, <String, dynamic>{'api_key': _apiKey});
+
     try {
       final response = await _dio.getUri(uri,
           options: Options(
@@ -78,7 +84,6 @@ class ApiClient {
     final parameters = <String, dynamic>{
       'request_token': requestToken,
     };
-
     const String path = '/authentication/session/new';
     Uri uri = _makeUri(path, <String, dynamic>{'api_key': _apiKey});
 
@@ -93,6 +98,29 @@ class ApiClient {
       );
       final sessionId = response.data['session_id'];
       return sessionId;
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<PopularMovies> popularMovies(int page, String locale) async {
+    const String path = '/movie/popular';
+    final Map<String, dynamic> queryParameters = {
+      'api_key': _apiKey,
+      'language': locale,
+      'page': page.toString(),
+    };
+    Uri uri = _makeUri(path, queryParameters);
+    try {
+      final response = await _dio.getUri(
+        uri,
+        options: Options(
+          responseType: ResponseType.json,
+        ),
+        onReceiveProgress: (count, total) {},
+      );
+      final popularMoviesResponse = PopularMovies.fromJson(response.data);
+      return popularMoviesResponse;
     } catch (_) {
       rethrow;
     }

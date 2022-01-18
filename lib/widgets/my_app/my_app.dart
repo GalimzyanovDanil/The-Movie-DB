@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:the_movie_db/Theme/app_colors.dart';
 import 'package:the_movie_db/widgets/my_app/my_app_model.dart';
 import 'package:the_movie_db/widgets/navigation/main_navigation.dart';
@@ -12,6 +13,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ru', 'RU'),
+        Locale('en', 'US'),
+      ],
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
           backgroundColor: AppColors.mainDarkBlue,

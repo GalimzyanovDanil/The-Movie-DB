@@ -1,5 +1,3 @@
-
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 abstract class _Keys {
@@ -11,7 +9,7 @@ class SessionDataProvider {
 
   Future<void> setSessionId(String? sessionId) {
     if (sessionId == null) return _storage.delete(key: _Keys.sessionIdKey);
-    
+
     return _storage.write(key: _Keys.sessionIdKey, value: sessionId);
   }
 
