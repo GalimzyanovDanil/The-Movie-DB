@@ -64,6 +64,4 @@ class Movie {
     }
     return DateTime.tryParse(dateTimeString);
   }
-
-  
 }

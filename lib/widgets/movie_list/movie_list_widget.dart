@@ -13,7 +13,7 @@ class MovieListWidget extends StatelessWidget {
 
     model?.snackBar = SnackBar(
       content: Text(model.errorMessage ?? 'Empty erroe text'),
-      onVisible: () => model.loadPopularMovies(context),
+      onVisible: () => model.loadMovies(context),
       duration: const Duration(seconds: 5),
       // width: 280.0,
       padding: const EdgeInsets.symmetric(
@@ -142,6 +142,8 @@ class MovieListWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: TextField(
+            onEditingComplete: () {},
+            onChanged: (inputText) => model.searchMovies(context, inputText),
             decoration: InputDecoration(
               labelText: 'Поиск',
               filled: true,

@@ -32,7 +32,6 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
 
   @override
   void didUpdateWidget(covariant MainScreenWidget oldWidget) {
-    
     super.didUpdateWidget(oldWidget);
   }
 

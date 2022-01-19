@@ -134,7 +134,30 @@ class ApiClient {
     return uri;
   }
 
-
+  Future<PopularMovies> searchMovies(
+      int page, String locale, String query) async {
+    const String path = '/search/movie';
+    final Map<String, dynamic> queryParameters = {
+      'api_key': _apiKey,
+      'language': locale,
+      'query': query,
+      'page': page.toString(),
+    };
+    Uri uri = _makeUri(path, queryParameters);
+    try {
+      final response = await _dio.getUri(
+        uri,
+        options: Options(
+          responseType: ResponseType.json,
+        ),
+        onReceiveProgress: (count, total) {},
+      );
+      final popularMoviesResponse = PopularMovies.fromJson(response.data);
+      return popularMoviesResponse;
+    } catch (_) {
+      rethrow;
+    }
+  }
 }
 
 class ErrorMessage {

@@ -98,8 +98,6 @@ class AuthModel extends ChangeNotifier {
   }
 }
 
-
-
 /*
 30 - password or email error
 32 - email not veryfied
