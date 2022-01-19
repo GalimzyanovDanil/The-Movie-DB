@@ -11,6 +11,19 @@ class MovieListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final model = NotifierProvider.watch<MovieListModel>(context);
 
+    model?.snackBar = SnackBar(
+      content: Text(model.errorMessage ?? 'Empty erroe text'),
+      onVisible: () => model.loadPopularMovies(context),
+      duration: const Duration(seconds: 5),
+      // width: 280.0,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8.0, // Inner padding for SnackBar content.
+      ),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+    );
     if (model == null) {
       return const Center(
         child: Text('Модель не найдена'),
@@ -26,9 +39,37 @@ class MovieListWidget extends StatelessWidget {
           itemCount: model.movies.length,
           itemExtent: 163,
           itemBuilder: (BuildContext context, int index) {
+            model.loadNewPage(index, context);
             final movie = model.movies[index];
             final posterPath = movie.posterPath;
             final releaseDate = movie.releaseDate;
+
+            Widget posterImage;
+            if (posterPath != null) {
+              try {
+                posterImage =
+                    Image.network(ApiClient.createPosterPath(posterPath),
+                        loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes!
+                          : null,
+                    ),
+                  );
+                }, errorBuilder: (context, error, stackTrace) {
+                  return const SizedBox.shrink();
+                });
+              } catch (e) {
+                posterImage = SizedBox.shrink();
+              }
+            } else {
+              posterImage = SizedBox.shrink();
+            }
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -50,10 +91,7 @@ class MovieListWidget extends StatelessWidget {
                     clipBehavior: Clip.hardEdge,
                     child: Row(
                       children: [
-                        posterPath != null
-                            ? Image.network(
-                                ApiClient.createPosterPath(posterPath))
-                            : SizedBox.shrink(),
+                        posterImage,
                         SizedBox(width: 15),
                         Expanded(
                           child: Column(
@@ -70,7 +108,7 @@ class MovieListWidget extends StatelessWidget {
                               Text(
                                 releaseDate != null
                                     ? model.dateFormat.format(releaseDate)
-                                    : '', 
+                                    : '',
                                 style: TextStyle(color: Colors.grey),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,

@@ -12,7 +12,7 @@ class MainScreenWidget extends StatefulWidget {
 }
 
 class _MainScreenWidgetState extends State<MainScreenWidget> {
-  int _selectedTab = 0;
+  int _selectedTab = 1;
 
   final movieListModel = MovieListModel();
 
@@ -26,8 +26,14 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
   @override
   void didChangeDependencies() {
     movieListModel.setupLocale(context);
-    
+
     super.didChangeDependencies();
+  }
+
+  @override
+  void didUpdateWidget(covariant MainScreenWidget oldWidget) {
+    
+    super.didUpdateWidget(oldWidget);
   }
 
   @override

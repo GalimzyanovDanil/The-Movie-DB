@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:the_movie_db/domain/api_client/api_client.dart';
@@ -54,13 +52,13 @@ class AuthModel extends ChangeNotifier {
     } on DioError catch (e) {
       switch (e.type) {
         case DioErrorType.connectTimeout:
-          _errorMessage = _ErrorMessage.network;
+          _errorMessage = ErrorMessage.network;
           break;
         case DioErrorType.sendTimeout:
-          _errorMessage = _ErrorMessage.network;
+          _errorMessage = ErrorMessage.network;
           break;
         case DioErrorType.receiveTimeout:
-          _errorMessage = _ErrorMessage.network;
+          _errorMessage = ErrorMessage.network;
           break;
         case DioErrorType.response:
           final _data = e.response?.data as Map<String, dynamic>?;
@@ -70,24 +68,24 @@ class AuthModel extends ChangeNotifier {
               : _statusCode = 0;
 
           if (_statusCode == 30 || _statusCode == 32) {
-            _errorMessage = _ErrorMessage.auth;
+            _errorMessage = ErrorMessage.auth;
           } else {
-            _errorMessage = _ErrorMessage.other;
+            _errorMessage = ErrorMessage.other;
           }
           break;
         case DioErrorType.cancel:
-          _errorMessage = _ErrorMessage.other;
+          _errorMessage = ErrorMessage.other;
           break;
         case DioErrorType.other:
           if (e.error is SocketException) {
-            _errorMessage = _ErrorMessage.network;
+            _errorMessage = ErrorMessage.network;
           } else {
-            _errorMessage = _ErrorMessage.other;
+            _errorMessage = ErrorMessage.other;
           }
           break;
       }
     } catch (e) {
-      _errorMessage = _ErrorMessage.other;
+      _errorMessage = ErrorMessage.other;
     }
     _isAuthActive = false;
 
@@ -100,11 +98,7 @@ class AuthModel extends ChangeNotifier {
   }
 }
 
-class _ErrorMessage {
-  static const network = 'Ошибка подключения. Проверьте интернет соединение';
-  static const auth = 'Неверный логин или пароль!';
-  static const other = 'Произошла ошибка. Попробуйте повторить';
-}
+
 
 /*
 30 - password or email error
