@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:the_movie_db/domain/entity/convert.dart';
 
 part 'movie.g.dart';
 
@@ -10,7 +11,7 @@ class Movie {
   final String overview;
   @JsonKey(
     name: 'release_date',
-    fromJson: _verifyDateTime,
+    fromJson: verifyDateTime,
   )
   final DateTime? releaseDate;
   @JsonKey(name: 'genre_ids')
@@ -57,11 +58,4 @@ class Movie {
   }
 
   Map<String, dynamic> toJson() => _$MovieToJson(this);
-
-  static DateTime? _verifyDateTime(String? dateTimeString) {
-    if (dateTimeString == null || dateTimeString.isEmpty) {
-      return null;
-    }
-    return DateTime.tryParse(dateTimeString);
-  }
 }

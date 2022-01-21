@@ -4,6 +4,7 @@ import 'package:the_movie_db/widgets/auth/auth_widget.dart';
 import 'package:the_movie_db/widgets/auth/auth_widget_model.dart';
 import 'package:the_movie_db/widgets/main_screen/main_screen_model.dart';
 import 'package:the_movie_db/widgets/main_screen/main_screen_widget.dart';
+import 'package:the_movie_db/widgets/movie_details/movie_details_model.dart';
 import 'package:the_movie_db/widgets/movie_details/movie_details_widget.dart';
 
 abstract class MainNavigationRouteNames {
@@ -16,11 +17,11 @@ class MainNavigation {
   final Map<String, Widget Function(BuildContext)> routes =
       <String, WidgetBuilder>{
     MainNavigationRouteNames.auth: (context) => NotifierProvider(
-          model: AuthModel(),
+          create: () => AuthModel(),
           child: const AuthWidget(),
         ),
     MainNavigationRouteNames.main: (context) => NotifierProvider(
-          model: MainScreenModel(),
+          create: () => MainScreenModel(),
           child: const MainScreenWidget(),
         ),
   };
@@ -37,7 +38,10 @@ class MainNavigation {
         final arguments = settings.arguments;
         final movieId = (arguments != null && arguments is int) ? arguments : 0;
         return MaterialPageRoute(
-          builder: (context) => MovieDetailsWidget(movieId: movieId),
+          builder: (context) => NotifierProvider(
+            create: () => MovieDetailsModel(movieId),
+            child: const MovieDetailsWidget(),
+          ),
         );
 
       default:

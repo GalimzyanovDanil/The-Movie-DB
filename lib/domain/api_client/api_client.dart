@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:the_movie_db/domain/entity/movie_detail/movie_detail.dart';
 import 'package:the_movie_db/domain/entity/popular_movies/popular_movies.dart';
 
 // enum ApiClientExceptionType { network, auth, other }
@@ -154,6 +155,28 @@ class ApiClient {
       );
       final popularMoviesResponse = PopularMovies.fromJson(response.data);
       return popularMoviesResponse;
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<MovieDetail> movieDetails(int movieId, String locale) async {
+    String path = '/movie/$movieId';
+    final Map<String, dynamic> queryParameters = {
+      'api_key': _apiKey,
+      'language': locale,
+    };
+    Uri uri = _makeUri(path, queryParameters);
+    try {
+      final response = await _dio.getUri(
+        uri,
+        options: Options(
+          responseType: ResponseType.json,
+        ),
+        onReceiveProgress: (count, total) {},
+      );
+      final movieDetails = MovieDetail.fromJson(response.data);
+      return movieDetails;
     } catch (_) {
       rethrow;
     }

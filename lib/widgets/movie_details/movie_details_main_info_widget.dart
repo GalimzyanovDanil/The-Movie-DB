@@ -72,8 +72,8 @@ class _TopPosterWidget extends StatelessWidget {
       children: [
         Image(image: AssetImage(AppImages.topHeader)),
         Positioned(
-          top: 20,
-          left: 20,
+          top: 16,
+          left: 16,
           bottom: 20,
           child: Image(image: AssetImage(AppImages.topHeaderSubImage)),
         ),
