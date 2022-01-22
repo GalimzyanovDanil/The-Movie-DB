@@ -24,6 +24,7 @@ class MovieListWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.0),
       ),
     );
+
     if (model == null) {
       return const Center(
         child: Text('Модель не найдена'),
@@ -106,9 +107,7 @@ class MovieListWidget extends StatelessWidget {
                               ),
                               SizedBox(height: 5),
                               Text(
-                                releaseDate != null
-                                    ? model.dateFormat.format(releaseDate)
-                                    : '',
+                                model.dateToString(releaseDate),
                                 style: TextStyle(color: Colors.grey),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,

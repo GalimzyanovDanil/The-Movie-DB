@@ -40,6 +40,11 @@ class MovieListModel extends ChangeNotifier {
     return;
   }
 
+  String dateToString(DateTime? releaseDate) {
+    final date = releaseDate != null ? dateFormat.format(releaseDate) : '';
+    return date;
+  }
+
   Future<void> onTapMovie(
       {required BuildContext context, required int index}) async {
     final id = _movies[index].id;

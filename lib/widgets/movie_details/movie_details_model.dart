@@ -8,6 +8,7 @@ class MovieDetailsModel extends ChangeNotifier {
   final _apiClient = ApiClient();
   MovieDetail? _movieDetails;
   late DateFormat _dateFormat;
+  
   late String _locale = '';
 
   MovieDetail? get movieDetails => _movieDetails;
@@ -20,9 +21,17 @@ class MovieDetailsModel extends ChangeNotifier {
     if (_locale == locale) return;
     _locale = locale;
     _dateFormat = DateFormat.yMMMMd(_locale);
+    
     await _loadMovieDetails();
     return;
   }
+
+  String releaseDateToString(DateTime? releaseDate) {
+    final date = releaseDate != null ? dateFormat.format(releaseDate) : '';
+    return date;
+  }
+
+  
 
   Future<void> _loadMovieDetails() async {
     _movieDetails = await _apiClient.movieDetails(movieId, _locale);
