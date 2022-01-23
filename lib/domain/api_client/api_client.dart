@@ -165,6 +165,7 @@ class ApiClient {
     final Map<String, dynamic> queryParameters = {
       'api_key': _apiKey,
       'language': locale,
+      'append_to_response': 'credits,videos',
     };
     Uri uri = _makeUri(path, queryParameters);
     try {

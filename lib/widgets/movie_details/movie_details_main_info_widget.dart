@@ -12,36 +12,32 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const _TopPosterWidget(),
-        const Padding(
+      children: const [
+        _TopPosterWidget(),
+        Padding(
           padding: EdgeInsets.all(20.0),
           child: _MovieNameWidget(),
         ),
-        const _ScoreWidget(),
-        const _SummeryWidget(),
+        _ScoreWidget(),
+        _SummeryWidget(),
         Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: _overviewWidget(),
+          padding: EdgeInsets.all(10.0),
+          child: Text(
+            'Overview',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
         ),
-        const Padding(
+        Padding(
           padding: EdgeInsets.all(10.0),
           child: _DescriptionWidget(),
         ),
-        const SizedBox(height: 30),
-        const _PeopleWidgets(),
+        SizedBox(height: 20),
+        _PeopleWidgets(),
       ],
-    );
-  }
-
-  Text _overviewWidget() {
-    return const Text(
-      'Overview',
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-      ),
     );
   }
 }
@@ -256,60 +252,50 @@ class _PeopleWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final crew = NotifierProvider.watch<MovieDetailsModel>(context)
+        ?.movieDetails
+        ?.credits
+        .crew;
+    if (crew == null || crew.isEmpty) return const SizedBox.shrink();
+
     const nameStyle = TextStyle(
       color: Colors.white,
       fontSize: 16,
       fontWeight: FontWeight.w400,
     );
-    const jobTilteStyle = TextStyle(
-      color: Colors.white,
+    final jobTilteStyle = TextStyle(
+      color: Colors.white.withOpacity(0.5),
       fontSize: 16,
       fontWeight: FontWeight.w400,
     );
-    return Column(
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return GridView.builder(
+      padding: const EdgeInsets.only(left: 10, right: 10),
+      shrinkWrap: true,
+      itemCount: crew.length >= 4 ? 4 : crew.length,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 3,
+        mainAxisSpacing: 5.0,
+        crossAxisSpacing: 10.0,
+      ),
+      itemBuilder: (context, index) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text('Stefano Sollima', style: nameStyle),
-                Text('Director', style: jobTilteStyle),
-              ],
+            Text(
+              crew[index].name,
+              maxLines: 2,
+              style: nameStyle,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text('Stefano Sollima', style: nameStyle),
-                Text('Director', style: jobTilteStyle),
-              ],
-            )
-          ],
-        ),
-        const SizedBox(height: 20),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text('Stefano Sollima', style: nameStyle),
-                Text('Director', style: jobTilteStyle),
-              ],
+            Text(
+              crew[index].job,
+              style: jobTilteStyle,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text('Stefano Sollima', style: nameStyle),
-                Text('Director', style: jobTilteStyle),
-              ],
-            )
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 }

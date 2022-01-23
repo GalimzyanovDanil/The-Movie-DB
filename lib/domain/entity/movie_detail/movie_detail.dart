@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:the_movie_db/domain/entity/convert.dart';
+import 'package:the_movie_db/domain/entity/movie_details_casts/movie_details_casts.dart';
+import 'package:the_movie_db/domain/entity/movie_details_video/movie_details_video.dart';
 
 import 'genre.dart';
 import 'production_company.dart';
@@ -50,6 +52,8 @@ class MovieDetail {
   final double voteAverage;
   @JsonKey(name: 'vote_count')
   final int voteCount;
+  final MovieDetailsCasts credits;
+  final MovieDetailsVideo videos;
 
   const MovieDetail({
     required this.adult,
@@ -77,6 +81,8 @@ class MovieDetail {
     required this.video,
     required this.voteAverage,
     required this.voteCount,
+    required this.credits,
+    required this.videos,
   });
 
   factory MovieDetail.fromJson(Map<String, dynamic> json) {
@@ -84,6 +90,4 @@ class MovieDetail {
   }
 
   Map<String, dynamic> toJson() => _$MovieDetailToJson(this);
-
-  
 }

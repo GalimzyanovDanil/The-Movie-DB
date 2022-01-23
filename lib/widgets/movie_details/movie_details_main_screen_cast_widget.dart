@@ -1,13 +1,21 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:the_movie_db/resources/resources.dart';
+import 'package:the_movie_db/domain/api_client/api_client.dart';
+import 'package:the_movie_db/library/widgets/inherited/provider.dart';
+import 'package:the_movie_db/widgets/movie_details/movie_details_model.dart';
 
 class MovieDetailsMainScreenCastWidget extends StatelessWidget {
   const MovieDetailsMainScreenCastWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final cast = NotifierProvider.watch<MovieDetailsModel>(context)
+        ?.movieDetails
+        ?.credits
+        .cast;
+    if (cast == null || cast.isEmpty) return const SizedBox.shrink();
+
     return ColoredBox(
       color: Colors.white,
       child: Column(
@@ -27,10 +35,11 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
             height: 300,
             child: Scrollbar(
               child: ListView.builder(
-                itemCount: 20,
+                itemCount: cast.length >= 20 ? 20 : cast.length,
                 itemExtent: 120,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (BuildContext context, int index) {
+                  final profilePath = cast[index].profilePath;
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: DecoratedBox(
@@ -52,24 +61,29 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
                         clipBehavior: Clip.hardEdge,
                         child: Column(
                           children: [
-                            Image(image: AssetImage(AppImages.actor)),
+                            profilePath == null
+                                ? SizedBox(
+                                    height: 155,
+                                  )
+                                : Image.network(
+                                    ApiClient.createPosterPath(profilePath)),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Steven Yeun',
+                                    cast[index].originalName,
                                     maxLines: 1,
                                   ),
                                   SizedBox(height: 7),
                                   Text(
-                                    'Mark Grayson / Invincible (voice)',
+                                    cast[index].character,
                                     maxLines: 4,
                                   ),
                                   SizedBox(height: 7),
                                   Text(
-                                    '8 Episodes',
+                                    cast[index].knownForDepartment,
                                     maxLines: 1,
                                   ),
                                 ],
