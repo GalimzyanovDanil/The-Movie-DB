@@ -69,8 +69,8 @@ class _TopPosterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final movieDetails =
-        NotifierProvider.watch<MovieDetailsModel>(context)?.movieDetails;
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    final movieDetails = model?.movieDetails;
     final backdropPath = movieDetails?.backdropPath;
     final posterPath = movieDetails?.posterPath;
     return AspectRatio(
@@ -87,6 +87,22 @@ class _TopPosterWidget extends StatelessWidget {
             child: (posterPath != null)
                 ? Image.network(ApiClient.createPosterPath(posterPath))
                 : const SizedBox.shrink(),
+          ),
+          Positioned(
+            top: 5,
+            right: 5,
+            child: IconButton(
+              onPressed: () => model?.markAsFavorite(),
+              icon: (model?.isFavorite == true)
+                  ? const Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                    )
+                  : const Icon(
+                      Icons.favorite_outline,
+                      color: Colors.red,
+                    ),
+            ),
           ),
         ],
       ),

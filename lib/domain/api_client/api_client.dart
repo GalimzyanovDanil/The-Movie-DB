@@ -1,16 +1,21 @@
+import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:the_movie_db/domain/entity/movie_detail/movie_detail.dart';
 import 'package:the_movie_db/domain/entity/popular_movies/popular_movies.dart';
 
-// enum ApiClientExceptionType { network, auth, other }
+enum mediaType { movie, tv }
 
-// class ApiClientException {
-//   final ApiClientExceptionType type;
-
-//   ApiClientException(this.type);
-// }
+extension mediaTypeString on mediaType {
+  String asString() {
+    switch (this) {
+      case mediaType.movie:
+        return 'movie';
+      case mediaType.tv:
+        return 'tv';
+    }
+  }
+}
 
 class ApiClient {
   static const _host = 'https://api.themoviedb.org/3';
@@ -21,8 +26,6 @@ class ApiClient {
   static String createPosterPath(String posterPath) {
     return _imageUrl + posterPath;
   }
-
-
 
   //
   final _dio = Dio();
@@ -37,6 +40,7 @@ class ApiClient {
     final validToken = await _validateUser(
         username: username, password: password, requestToken: requestToken);
     final sessionId = await _makeSession(requestToken: validToken);
+
     return sessionId;
   }
 
@@ -51,6 +55,23 @@ class ApiClient {
           ));
       final token = response.data['request_token'];
       return token;
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<int> getAccountId(String sessionId) async {
+    const String path = '/account';
+    Uri uri = _makeUri(
+        path, <String, dynamic>{'api_key': _apiKey, 'session_id': sessionId});
+
+    try {
+      final response = await _dio.getUri(uri,
+          options: Options(
+            responseType: ResponseType.json,
+          ));
+      final accountId = response.data['id'];
+      return accountId;
     } catch (_) {
       rethrow;
     }
@@ -187,7 +208,59 @@ class ApiClient {
     }
   }
 
-  // https://www.youtube.com/watch?v=
+  Future<bool> isFavorite(int movieId, String sessionId) async {
+    String path = '/movie/$movieId/account_states';
+    final Map<String, dynamic> queryParameters = {
+      'api_key': _apiKey,
+      'session_id': sessionId,
+    };
+    Uri uri = _makeUri(path, queryParameters);
+    try {
+      final response = await _dio.getUri(
+        uri,
+        options: Options(
+          responseType: ResponseType.json,
+        ),
+        onReceiveProgress: (count, total) {},
+      );
+      final result = response.data['favorite'] as bool;
+      return result;
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<bool> markAsFavorite(
+      {required mediaType mediaType,
+      required int mediaId,
+      required bool favorite,
+      required String sessionId,
+      required int accountId}) async {
+    final parameters = <String, dynamic>{
+      'media_type': mediaType.asString(),
+      'media_id': mediaId,
+      'favorite': favorite,
+    };
+    final String path = '/account/$accountId/favorite';
+    Uri uri = _makeUri(
+        path, <String, dynamic>{'api_key': _apiKey, 'session_id': sessionId});
+
+    try {
+      final response = await _dio.postUri(
+        uri,
+        data: jsonEncode(parameters),
+        options: Options(
+          headers: {'Content-Type': 'application/json;charset=utf-8'},
+          responseType: ResponseType.json,
+        ),
+        onReceiveProgress: (count, total) {},
+      );
+      final result = response.data['status_code'] as int == 1;
+      return result;
+    } catch (_) {
+      rethrow;
+    }
+  }
 }
 
 class ErrorMessage {
