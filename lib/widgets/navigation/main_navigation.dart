@@ -6,11 +6,14 @@ import 'package:the_movie_db/widgets/main_screen/main_screen_model.dart';
 import 'package:the_movie_db/widgets/main_screen/main_screen_widget.dart';
 import 'package:the_movie_db/widgets/movie_details/movie_details_model.dart';
 import 'package:the_movie_db/widgets/movie_details/movie_details_widget.dart';
+import 'package:the_movie_db/widgets/movie_trailer/movie_trailer_model.dart';
+import 'package:the_movie_db/widgets/movie_trailer/movie_trailer_widget.dart';
 
 abstract class MainNavigationRouteNames {
   static const auth = 'auth';
   static const main = '/';
   static const movieDetails = '/movie_details';
+  static const movieTrailer = '/movie_details/trailer';
 }
 
 class MainNavigation {
@@ -41,6 +44,16 @@ class MainNavigation {
           builder: (context) => NotifierProvider(
             create: () => MovieDetailsModel(movieId),
             child: const MovieDetailsWidget(),
+          ),
+        );
+
+      case MainNavigationRouteNames.movieTrailer:
+        final arguments = settings.arguments;
+        final key = (arguments != null && arguments is String) ? arguments : '';
+        return MaterialPageRoute(
+          builder: (context) => NotifierProvider(
+            create: () => MovieTrailerModel(key),
+            child: const MovieTrailerWidget(),
           ),
         );
 

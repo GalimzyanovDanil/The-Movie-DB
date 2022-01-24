@@ -142,6 +142,10 @@ class _ScoreWidget extends StatelessWidget {
     var voteAverage = movieDetails?.voteAverage ?? 0;
     var textVoteAverage = (voteAverage * 10).toStringAsFixed(0);
     var percentVoteAverage = (voteAverage / 10);
+    final videos = movieDetails?.videos.results
+        .where((result) => result.site == 'YouTube' && result.site == 'Trailer')
+        .toList();
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -167,16 +171,39 @@ class _ScoreWidget extends StatelessWidget {
           ),
         ),
         Container(width: 1, height: 15, color: Colors.grey),
-        TextButton(
-          onPressed: () {},
-          child: Row(
-            children: const [
-              Icon(Icons.play_arrow),
-              Text('Play Trailer'),
-            ],
-          ),
-        ),
+        const _TrailerButtonWidget(),
       ],
+    );
+  }
+}
+
+class _TrailerButtonWidget extends StatelessWidget {
+  const _TrailerButtonWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    final movieDetails = model?.movieDetails;
+
+    final videos = movieDetails?.videos.results
+        .where((result) => result.site == 'YouTube' && result.type == 'Trailer')
+        .toList();
+
+    if (videos == null || videos.isEmpty) return const SizedBox.shrink();
+
+    return TextButton(
+      onPressed: () => model?.onTapTrailer(
+        key: videos.first.key,
+        context: context,
+      ),
+      child: Row(
+        children: const [
+          Icon(Icons.play_arrow),
+          Text('Play Trailer'),
+        ],
+      ),
     );
   }
 }

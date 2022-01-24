@@ -15,12 +15,16 @@ import 'package:the_movie_db/domain/entity/popular_movies/popular_movies.dart';
 class ApiClient {
   static const _host = 'https://api.themoviedb.org/3';
   static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
+  static const _trailerUrl = 'https://www.youtube.com/watch?v=';
   static const _apiKey = 'b593c6b73d3038c9c91fa46b4acad05d';
 
   static String createPosterPath(String posterPath) {
     return _imageUrl + posterPath;
   }
 
+
+
+  //
   final _dio = Dio();
 
   Future<String> authRequest({
@@ -182,6 +186,8 @@ class ApiClient {
       rethrow;
     }
   }
+
+  // https://www.youtube.com/watch?v=
 }
 
 class ErrorMessage {

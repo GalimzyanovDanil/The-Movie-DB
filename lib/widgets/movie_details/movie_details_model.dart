@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:the_movie_db/domain/api_client/api_client.dart';
 import 'package:the_movie_db/domain/entity/movie_detail/movie_detail.dart';
+import 'package:the_movie_db/widgets/navigation/main_navigation.dart';
 
 class MovieDetailsModel extends ChangeNotifier {
   final int movieId;
@@ -24,6 +25,15 @@ class MovieDetailsModel extends ChangeNotifier {
 
     await _loadMovieDetails();
     return;
+  }
+
+    Future<void> onTapTrailer(
+      {required BuildContext context, required String key}) async {
+    
+    Navigator.of(context).pushNamed(
+      MainNavigationRouteNames.movieTrailer,
+      arguments: key,
+    );
   }
 
   String releaseDateToString(DateTime? releaseDate) {
