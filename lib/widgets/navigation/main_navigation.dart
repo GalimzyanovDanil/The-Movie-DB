@@ -1,39 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:the_movie_db/library/widgets/inherited/provider.dart';
-import 'package:the_movie_db/widgets/auth/auth_widget.dart';
-import 'package:the_movie_db/widgets/auth/auth_widget_model.dart';
-import 'package:the_movie_db/widgets/main_screen/main_screen_model.dart';
-import 'package:the_movie_db/widgets/main_screen/main_screen_widget.dart';
-import 'package:the_movie_db/widgets/movie_details/movie_details_model.dart';
-import 'package:the_movie_db/widgets/movie_details/movie_details_widget.dart';
-import 'package:the_movie_db/widgets/movie_trailer/movie_trailer_model.dart';
-import 'package:the_movie_db/widgets/movie_trailer/movie_trailer_widget.dart';
+import 'package:the_movie_db/domain/factories/screen_factories.dart';
+
 
 abstract class MainNavigationRouteNames {
-  static const auth = 'auth';
-  static const main = '/';
-  static const movieDetails = '/movie_details';
-  static const movieTrailer = '/movie_details/trailer';
+  static const loader = '/';
+  static const auth = '/auth';
+  static const main = '/main';
+  static const movieDetails = '/main/movie_details';
+  static const movieTrailer = '/main/movie_details/trailer';
 }
 
 class MainNavigation {
+  static final _screenFactories = ScreenFactories();
+
   final Map<String, Widget Function(BuildContext)> routes =
       <String, WidgetBuilder>{
-    MainNavigationRouteNames.auth: (context) => NotifierProvider(
-          create: () => AuthModel(),
-          child: const AuthWidget(),
-        ),
-    MainNavigationRouteNames.main: (context) => NotifierProvider(
-          create: () => MainScreenModel(),
-          child: const MainScreenWidget(),
-        ),
+    MainNavigationRouteNames.main: (context) => _screenFactories.createMain(),
   };
-
-  String setInitialRoute(bool isAuth) {
-    return isAuth
-        ? MainNavigationRouteNames.main
-        : MainNavigationRouteNames.auth;
-  }
 
   Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -41,20 +24,28 @@ class MainNavigation {
         final arguments = settings.arguments;
         final movieId = (arguments != null && arguments is int) ? arguments : 0;
         return MaterialPageRoute(
-          builder: (context) => NotifierProvider(
-            create: () => MovieDetailsModel(movieId),
-            child: const MovieDetailsWidget(),
-          ),
+          builder: (context) => _screenFactories.createMovieDetails(movieId),
         );
 
       case MainNavigationRouteNames.movieTrailer:
         final arguments = settings.arguments;
         final key = (arguments != null && arguments is String) ? arguments : '';
         return MaterialPageRoute(
-          builder: (context) => NotifierProvider(
-            create: () => MovieTrailerModel(key),
-            child: const MovieTrailerWidget(),
-          ),
+          builder: (context) => _screenFactories.createMovieTrailer(key),
+        );
+
+      case MainNavigationRouteNames.loader:
+        return PageRouteBuilder(
+          pageBuilder: (_, __, ___) => _screenFactories.createLoader(),
+        );
+
+      case MainNavigationRouteNames.auth:
+        return PageRouteBuilder(
+          pageBuilder: (_, __, ___) => _screenFactories.createAuth(),
+          // transitionsBuilder: (c, anim, a2, child) =>
+          //     FadeTransition(opacity: anim, child: child),
+          // transitionDuration: Duration(seconds: 6),
+          // reverseTransitionDuration: Duration(seconds: 3),
         );
 
       default:

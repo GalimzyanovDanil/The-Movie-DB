@@ -6,7 +6,7 @@ import 'package:the_movie_db/domain/entity/popular_movies/popular_movies.dart';
 
 enum mediaType { movie, tv }
 
-extension mediaTypeString on mediaType {
+extension MediaTypeString on mediaType {
   String asString() {
     switch (this) {
       case mediaType.movie:

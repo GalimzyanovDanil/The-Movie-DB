@@ -15,7 +15,7 @@ class _MovieTrailerWidgetState extends State<MovieTrailerWidget> {
 
   @override
   void didChangeDependencies() {
-    final model = NotifierProvider.read<MovieTrailerModel>(context);
+    final model = NotifierProvider.read<MovieTrailerWidgetModel>(context);
     _controller = model?.controller;
 
     super.didChangeDependencies();

@@ -2,16 +2,14 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:the_movie_db/domain/api_client/api_client.dart';
-import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
-import 'package:the_movie_db/domain/data_providers/shared_pref_data_provider.dart';
+import 'package:the_movie_db/domain/service/auth_service.dart';
 import 'package:the_movie_db/widgets/navigation/main_navigation.dart';
 
-class AuthModel extends ChangeNotifier {
+class AuthWidgetModel extends ChangeNotifier {
+  final _authService = AuthService();
+
   final loginTextController = TextEditingController();
   final passwordTextController = TextEditingController();
-  final _apiClient = ApiClient();
-  final _sessionDataProvider = SessionDataProvider();
-  final _sharedPrefDataProvider = SharedPrefDataProvider();
 
   String? get errorMessage => _errorMessage;
   bool get canLogin => !_isAuthActive;
@@ -37,8 +35,6 @@ class AuthModel extends ChangeNotifier {
   Future<bool> _auth() async {
     final username = loginTextController.text;
     final password = passwordTextController.text;
-    String? _sessionId;
-    int? _accoutId;
 
     if (username.isEmpty || password.isEmpty) {
       _errorMessage = 'Заполните логин и пароль';
@@ -50,9 +46,7 @@ class AuthModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _sessionId =
-          await _apiClient.authRequest(username: username, password: password);
-      _accoutId = await _apiClient.getAccountId(_sessionId);
+      _authService.login(username, password);
     } on DioError catch (e) {
       switch (e.type) {
         case DioErrorType.connectTimeout:
@@ -93,13 +87,7 @@ class AuthModel extends ChangeNotifier {
     }
     _isAuthActive = false;
 
-    if (_sessionId == null || _errorMessage != null) {
-      return false;
-    }
-
-    await _sessionDataProvider.setSessionId(_sessionId);
-    await _sharedPrefDataProvider.set<int>(_accoutId, SharedPrefKey.accountId);
-    return true;
+    return _errorMessage == null;
   }
 }
 

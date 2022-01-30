@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:the_movie_db/Theme/app_colors.dart';
-import 'package:the_movie_db/widgets/my_app/my_app_model.dart';
+
 import 'package:the_movie_db/widgets/navigation/main_navigation.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key, required this.model}) : super(key: key);
-  final MyAppModel model;
-  static final _mainNavigation = MainNavigation();
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final _mainNavigation = MainNavigation();
     return MaterialApp(
       title: 'Flutter Demo',
       localizationsDelegates: const [
@@ -33,7 +32,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       routes: _mainNavigation.routes,
-      initialRoute: _mainNavigation.setInitialRoute(model.isAuth),
+      initialRoute: MainNavigationRouteNames.loader,
       onGenerateRoute: _mainNavigation.onGenerateRoute,
     );
   }

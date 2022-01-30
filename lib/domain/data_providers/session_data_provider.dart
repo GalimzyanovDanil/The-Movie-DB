@@ -14,6 +14,10 @@ class SessionDataProvider {
     return _storage.write(key: _Keys.sessionIdKey, value: sessionId);
   }
 
+  Future<void> clearSessionId() {
+    return _storage.delete(key: _Keys.sessionIdKey);
+  }
+
   Future<String?> getSessionId() {
     return _storage.read(key: _Keys.sessionIdKey);
   }

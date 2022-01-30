@@ -49,7 +49,7 @@ class _DescriptionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final overview = NotifierProvider.watch<MovieDetailsModel>(context)
+    final overview = NotifierProvider.watch<MovieDetailsWidgetModel>(context)
         ?.movieDetails
         ?.overview;
 
@@ -69,7 +69,7 @@ class _TopPosterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    final model = NotifierProvider.watch<MovieDetailsWidgetModel>(context);
     final movieDetails = model?.movieDetails;
     final backdropPath = movieDetails?.backdropPath;
     final posterPath = movieDetails?.posterPath;
@@ -92,7 +92,7 @@ class _TopPosterWidget extends StatelessWidget {
             top: 5,
             right: 5,
             child: IconButton(
-              onPressed: () => model?.markAsFavorite(),
+              onPressed: () => model?.markAsFavorite(context),
               icon: (model?.isFavorite == true)
                   ? const Icon(
                       Icons.favorite,
@@ -116,7 +116,7 @@ class _MovieNameWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final movieDetails =
-        NotifierProvider.watch<MovieDetailsModel>(context)?.movieDetails;
+        NotifierProvider.watch<MovieDetailsWidgetModel>(context)?.movieDetails;
     final title = movieDetails?.title;
     String? year = movieDetails?.releaseDate?.year.toStringAsFixed(0);
     year = (year != null) ? ' ($year)' : '';
@@ -154,7 +154,7 @@ class _ScoreWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final movieDetails =
-        NotifierProvider.watch<MovieDetailsModel>(context)?.movieDetails;
+        NotifierProvider.watch<MovieDetailsWidgetModel>(context)?.movieDetails;
     var voteAverage = movieDetails?.voteAverage ?? 0;
     var textVoteAverage = (voteAverage * 10).toStringAsFixed(0);
     var percentVoteAverage = (voteAverage / 10);
@@ -200,7 +200,7 @@ class _TrailerButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    final model = NotifierProvider.watch<MovieDetailsWidgetModel>(context);
     final movieDetails = model?.movieDetails;
 
     final videos = movieDetails?.videos.results
@@ -229,7 +229,7 @@ class _SummeryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    final model = NotifierProvider.watch<MovieDetailsWidgetModel>(context);
     if (model == null) return const SizedBox.shrink();
     var infoText = <String>[];
 
@@ -295,7 +295,7 @@ class _PeopleWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final crew = NotifierProvider.watch<MovieDetailsModel>(context)
+    final crew = NotifierProvider.watch<MovieDetailsWidgetModel>(context)
         ?.movieDetails
         ?.credits
         .crew;

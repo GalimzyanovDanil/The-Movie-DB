@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:the_movie_db/domain/api_client/api_client.dart';
@@ -6,7 +7,7 @@ import 'package:the_movie_db/domain/data_providers/shared_pref_data_provider.dar
 import 'package:the_movie_db/domain/entity/movie_detail/movie_detail.dart';
 import 'package:the_movie_db/widgets/navigation/main_navigation.dart';
 
-class MovieDetailsModel extends ChangeNotifier {
+class MovieDetailsWidgetModel extends ChangeNotifier {
   final int movieId;
   final _securStorage = SessionDataProvider();
   final _sharedPrefStorage = SharedPrefDataProvider();
@@ -22,7 +23,7 @@ class MovieDetailsModel extends ChangeNotifier {
   DateFormat get dateFormat => _dateFormat;
   bool get isFavorite => _isFavorite;
 
-  MovieDetailsModel(this.movieId);
+  MovieDetailsWidgetModel(this.movieId);
 
   Future<void> setupLocale(BuildContext context) async {
     final locale = Localizations.localeOf(context).toLanguageTag();
@@ -34,19 +35,62 @@ class MovieDetailsModel extends ChangeNotifier {
     return;
   }
 
-  Future<void> markAsFavorite() async {
+  Future<void> markAsFavorite(BuildContext context) async {
     final accountId =
         await _sharedPrefStorage.get<int>(SharedPrefKey.accountId);
-    if (accountId == null) return;
 
-    _isFavorite = await _apiClient.markAsFavorite(
-      mediaType: mediaType.movie,
-      mediaId: movieId,
-      favorite: !_isFavorite,
-      sessionId: _sessionId,
-      accountId: accountId,
-    );
-    notifyListeners();
+    if (accountId == null) return;
+    try {
+      _isFavorite = await _apiClient.markAsFavorite(
+        mediaType: mediaType.movie,
+        mediaId: movieId,
+        favorite: !_isFavorite,
+        sessionId: _sessionId,
+        accountId: accountId,
+      );
+      notifyListeners();
+    } on DioError catch (e) {
+      switch (e.type) {
+        case DioErrorType.connectTimeout:
+          // _errorMessage = ErrorMessage.network;
+          break;
+        case DioErrorType.sendTimeout:
+          // _errorMessage = ErrorMessage.network;
+          break;
+        case DioErrorType.receiveTimeout:
+          // _errorMessage = ErrorMessage.network;
+          break;
+        case DioErrorType.response:
+          final _data = e.response?.data as Map<String, dynamic>?;
+          final int _statusCode;
+          _data != null
+              ? _statusCode = _data['status_code'] as int
+              : _statusCode = 0;
+
+          if (_statusCode == 3) {
+            _securStorage.setSessionId(null);
+            _sharedPrefStorage.delete(SharedPrefKey.accountId);
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                MainNavigationRouteNames.auth, (route) => false);
+            // _errorMessage = ErrorMessage.auth;
+          } else {
+            // _errorMessage = ErrorMessage.other;
+          }
+          break;
+        case DioErrorType.cancel:
+          // _errorMessage = ErrorMessage.other;
+          break;
+        case DioErrorType.other:
+          // if (e.error is SocketException) {
+          //   _errorMessage = ErrorMessage.network;
+          // } else {
+          //   _errorMessage = ErrorMessage.other;
+          // }
+          break;
+      }
+    } catch (e) {
+      // _errorMessage = ErrorMessage.other;
+    }
   }
 
   Future<void> onTapTrailer(

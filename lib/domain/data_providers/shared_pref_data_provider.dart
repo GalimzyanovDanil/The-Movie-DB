@@ -18,4 +18,8 @@ class SharedPrefDataProvider {
   Future<T?> get<T>(String key) async {
     return (await _storage).get(key) as T;
   }
+
+  Future<bool> delete(String key) async {
+    return (await _storage).remove(key);
+  }
 }

@@ -10,7 +10,7 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cast = NotifierProvider.watch<MovieDetailsModel>(context)
+    final cast = NotifierProvider.watch<MovieDetailsWidgetModel>(context)
         ?.movieDetails
         ?.credits
         .cast;

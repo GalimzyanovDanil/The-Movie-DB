@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class MovieTrailerModel extends ChangeNotifier {
+class MovieTrailerWidgetModel extends ChangeNotifier {
   final String key;
 
   YoutubePlayerController get controller => YoutubePlayerController(
@@ -12,5 +12,5 @@ class MovieTrailerModel extends ChangeNotifier {
         ),
       );
 
-  MovieTrailerModel(this.key);
+  MovieTrailerWidgetModel(this.key);
 }

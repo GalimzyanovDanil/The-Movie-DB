@@ -16,7 +16,7 @@ class MovieDetailsWidget extends StatefulWidget {
 class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
   @override
   void didChangeDependencies() {
-    NotifierProvider.read<MovieDetailsModel>(context)?.setupLocale(context);
+    NotifierProvider.read<MovieDetailsWidgetModel>(context)?.setupLocale(context);
     super.didChangeDependencies();
   }
 
@@ -42,7 +42,7 @@ class _BodyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final movieDetails =
-        NotifierProvider.watch<MovieDetailsModel>(context)?.movieDetails;
+        NotifierProvider.watch<MovieDetailsWidgetModel>(context)?.movieDetails;
     if (movieDetails == null) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -64,7 +64,7 @@ class _TitleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final title =
-        NotifierProvider.watch<MovieDetailsModel>(context)?.movieDetails?.title;
+        NotifierProvider.watch<MovieDetailsWidgetModel>(context)?.movieDetails?.title;
     return Text(title ?? 'Загрузка...');
   }
 }
