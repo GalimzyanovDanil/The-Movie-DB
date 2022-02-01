@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'package:the_movie_db/domain/api_client/api_client.dart';
-import 'package:the_movie_db/library/widgets/inherited/provider.dart';
+import 'package:provider/provider.dart';
+import 'package:the_movie_db/domain/api_client/path_factories.dart';
 import 'package:the_movie_db/widgets/elements/radial_percent_widget.dart';
 import 'package:the_movie_db/widgets/movie_details/movie_details_model.dart';
 
@@ -49,9 +48,8 @@ class _DescriptionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final overview = NotifierProvider.watch<MovieDetailsWidgetModel>(context)
-        ?.movieDetails
-        ?.overview;
+    final overview =
+        context.watch<MovieDetailsWidgetModel>().movieDetails?.overview;
 
     return Text(
       overview ?? '',
@@ -69,8 +67,8 @@ class _TopPosterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<MovieDetailsWidgetModel>(context);
-    final movieDetails = model?.movieDetails;
+    final model = context.watch<MovieDetailsWidgetModel>();
+    final movieDetails = model.movieDetails;
     final backdropPath = movieDetails?.backdropPath;
     final posterPath = movieDetails?.posterPath;
     return AspectRatio(
@@ -78,22 +76,22 @@ class _TopPosterWidget extends StatelessWidget {
       child: Stack(
         children: [
           (backdropPath != null)
-              ? Image.network(ApiClient.createPosterPath(backdropPath))
+              ? Image.network(PathFactories.createPosterPath(backdropPath))
               : const SizedBox.shrink(),
           Positioned(
             top: 20,
             left: 20,
             bottom: 20,
             child: (posterPath != null)
-                ? Image.network(ApiClient.createPosterPath(posterPath))
+                ? Image.network(PathFactories.createPosterPath(posterPath))
                 : const SizedBox.shrink(),
           ),
           Positioned(
             top: 5,
             right: 5,
             child: IconButton(
-              onPressed: () => model?.markAsFavorite(context),
-              icon: (model?.isFavorite == true)
+              onPressed: () => model.markAsFavorite(context),
+              icon: (model.isFavorite == true)
                   ? const Icon(
                       Icons.favorite,
                       color: Colors.red,
@@ -115,8 +113,7 @@ class _MovieNameWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final movieDetails =
-        NotifierProvider.watch<MovieDetailsWidgetModel>(context)?.movieDetails;
+    final movieDetails = context.watch<MovieDetailsWidgetModel>().movieDetails;
     final title = movieDetails?.title;
     String? year = movieDetails?.releaseDate?.year.toStringAsFixed(0);
     year = (year != null) ? ' ($year)' : '';
@@ -153,14 +150,10 @@ class _ScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final movieDetails =
-        NotifierProvider.watch<MovieDetailsWidgetModel>(context)?.movieDetails;
+    final movieDetails = context.watch<MovieDetailsWidgetModel>().movieDetails;
     var voteAverage = movieDetails?.voteAverage ?? 0;
     var textVoteAverage = (voteAverage * 10).toStringAsFixed(0);
     var percentVoteAverage = (voteAverage / 10);
-    final videos = movieDetails?.videos.results
-        .where((result) => result.site == 'YouTube' && result.site == 'Trailer')
-        .toList();
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -200,8 +193,8 @@ class _TrailerButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<MovieDetailsWidgetModel>(context);
-    final movieDetails = model?.movieDetails;
+    final model = context.watch<MovieDetailsWidgetModel>();
+    final movieDetails = model.movieDetails;
 
     final videos = movieDetails?.videos.results
         .where((result) => result.site == 'YouTube' && result.type == 'Trailer')
@@ -210,7 +203,7 @@ class _TrailerButtonWidget extends StatelessWidget {
     if (videos == null || videos.isEmpty) return const SizedBox.shrink();
 
     return TextButton(
-      onPressed: () => model?.onTapTrailer(
+      onPressed: () => model.onTapTrailer(
         key: videos.first.key,
         context: context,
       ),
@@ -229,8 +222,7 @@ class _SummeryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<MovieDetailsWidgetModel>(context);
-    if (model == null) return const SizedBox.shrink();
+    final model = context.watch<MovieDetailsWidgetModel>();
     var infoText = <String>[];
 
     final releaseDate = model.movieDetails?.releaseDate;
@@ -295,10 +287,8 @@ class _PeopleWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final crew = NotifierProvider.watch<MovieDetailsWidgetModel>(context)
-        ?.movieDetails
-        ?.credits
-        .crew;
+    final crew =
+        context.watch<MovieDetailsWidgetModel>().movieDetails?.credits.crew;
     if (crew == null || crew.isEmpty) return const SizedBox.shrink();
 
     const nameStyle = TextStyle(

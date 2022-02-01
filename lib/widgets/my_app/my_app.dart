@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:the_movie_db/Theme/app_colors.dart';
-
 import 'package:the_movie_db/widgets/navigation/main_navigation.dart';
 
 class MyApp extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:the_movie_db/Theme/app_button_style.dart';
-import 'package:the_movie_db/library/widgets/inherited/provider.dart';
 import 'package:the_movie_db/widgets/auth/auth_widget_model.dart';
 
 class AuthWidget extends StatelessWidget {
@@ -70,7 +70,7 @@ class _FormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.read<AuthWidgetModel>(context);
+    final model = context.read<AuthWidgetModel>();
     const textStyle = TextStyle(
       fontSize: 16,
       color: Color(0xFF212529),
@@ -95,7 +95,7 @@ class _FormWidget extends StatelessWidget {
         ),
         const SizedBox(height: 5),
         TextField(
-          controller: model?.loginTextController,
+          controller: model.loginTextController,
           decoration: textFieldDecorator,
         ),
         const SizedBox(height: 20),
@@ -105,7 +105,7 @@ class _FormWidget extends StatelessWidget {
         ),
         const SizedBox(height: 5),
         TextField(
-          controller: model?.passwordTextController,
+          controller: model.passwordTextController,
           decoration: textFieldDecorator,
           obscureText: true,
         ),
@@ -115,7 +115,7 @@ class _FormWidget extends StatelessWidget {
             const _LoginButtonWidget(),
             const SizedBox(width: 30),
             TextButton(
-              onPressed: () => model?.resetPassword(),
+              onPressed: () => model.resetPassword(),
               style: AppButtonStyle.linkButton,
               child: const Text('Reset password'),
             ),
@@ -134,11 +134,11 @@ class _LoginButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const _color = Color(0xFF01B4E4);
-    final _model = NotifierProvider.watch<AuthWidgetModel>(context);
-    final _canLogin = _model?.canLogin;
+    final _model = context.watch<AuthWidgetModel>();
+    final _canLogin = _model.canLogin;
 
     return ElevatedButton(
-      onPressed: _canLogin == true ? () => _model?.auth(context) : null,
+      onPressed: _canLogin == true ? () => _model.auth(context) : null,
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(_color),
         foregroundColor: MaterialStateProperty.all(Colors.white),
@@ -173,7 +173,7 @@ class _ErrorMessageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _errorMessage =
-        NotifierProvider.watch<AuthWidgetModel>(context)?.errorMessage;
+        context.watch<AuthWidgetModel>().errorMessage;
     if (_errorMessage == null) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),

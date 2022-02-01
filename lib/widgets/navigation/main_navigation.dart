@@ -27,12 +27,12 @@ class MainNavigation {
           builder: (context) => _screenFactories.createMovieDetails(movieId),
         );
 
-      case MainNavigationRouteNames.movieTrailer:
-        final arguments = settings.arguments;
-        final key = (arguments != null && arguments is String) ? arguments : '';
-        return MaterialPageRoute(
-          builder: (context) => _screenFactories.createMovieTrailer(key),
-        );
+      // case MainNavigationRouteNames.movieTrailer:
+      //   final arguments = settings.arguments;
+      //   final key = (arguments != null && arguments is String) ? arguments : '';
+      //   return MaterialPageRoute(
+      //     builder: (context) => _screenFactories.createMovieTrailer(key),
+      //   );
 
       case MainNavigationRouteNames.loader:
         return PageRouteBuilder(

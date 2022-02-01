@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:the_movie_db/library/widgets/inherited/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:the_movie_db/widgets/movie_trailer/movie_trailer_model.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -15,8 +15,8 @@ class _MovieTrailerWidgetState extends State<MovieTrailerWidget> {
 
   @override
   void didChangeDependencies() {
-    final model = NotifierProvider.read<MovieTrailerWidgetModel>(context);
-    _controller = model?.controller;
+    final model = context.read<MovieTrailerWidgetModel>();
+    _controller = model.controller;
 
     super.didChangeDependencies();
   }

@@ -1,8 +1,6 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
-import 'package:the_movie_db/domain/api_client/api_client.dart';
-import 'package:the_movie_db/library/widgets/inherited/provider.dart';
+import 'package:provider/provider.dart';
+import 'package:the_movie_db/domain/api_client/path_factories.dart';
 import 'package:the_movie_db/widgets/movie_details/movie_details_model.dart';
 
 class MovieDetailsMainScreenCastWidget extends StatelessWidget {
@@ -10,10 +8,8 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cast = NotifierProvider.watch<MovieDetailsWidgetModel>(context)
-        ?.movieDetails
-        ?.credits
-        .cast;
+    final cast = context.select(
+        (MovieDetailsWidgetModel model) => model.movieDetails?.credits.cast);
     if (cast == null || cast.isEmpty) return const SizedBox.shrink();
 
     return ColoredBox(
@@ -21,8 +17,8 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
+          const Padding(
+            padding: EdgeInsets.all(10.0),
             child: Text(
               'Series Cast',
               style: TextStyle(
@@ -47,26 +43,26 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
                         color: Colors.white,
                         border:
                             Border.all(color: Colors.black.withOpacity(0.2)),
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.1),
                             blurRadius: 8,
-                            offset: Offset(0, 2),
+                            offset: const Offset(0, 2),
                           ),
                         ],
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        borderRadius: const BorderRadius.all(Radius.circular(8)),
                         clipBehavior: Clip.hardEdge,
                         child: Column(
                           children: [
                             profilePath == null
-                                ? SizedBox(
+                                ? const SizedBox(
                                     height: 155,
                                   )
                                 : Image.network(
-                                    ApiClient.createPosterPath(profilePath)),
+                                    PathFactories.createPosterPath(profilePath)),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Column(
@@ -76,12 +72,12 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
                                     cast[index].originalName,
                                     maxLines: 1,
                                   ),
-                                  SizedBox(height: 7),
+                                  const SizedBox(height: 7),
                                   Text(
                                     cast[index].character,
                                     maxLines: 4,
                                   ),
-                                  SizedBox(height: 7),
+                                  const SizedBox(height: 7),
                                   Text(
                                     cast[index].knownForDepartment,
                                     maxLines: 1,
@@ -102,7 +98,7 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
             padding: const EdgeInsets.all(3.0),
             child: TextButton(
               onPressed: () {},
-              child: Text('Full Cast & Crew'),
+              child: const Text('Full Cast & Crew'),
             ),
           ),
         ],

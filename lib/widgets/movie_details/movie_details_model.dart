@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:the_movie_db/domain/api_client/api_client.dart';
+import 'package:the_movie_db/domain/api_client/account_api_client.dart';
+import 'package:the_movie_db/domain/api_client/movie_api_client.dart';
 import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
 import 'package:the_movie_db/domain/data_providers/shared_pref_data_provider.dart';
 import 'package:the_movie_db/domain/entity/movie_detail/movie_detail.dart';
@@ -11,7 +12,8 @@ class MovieDetailsWidgetModel extends ChangeNotifier {
   final int movieId;
   final _securStorage = SessionDataProvider();
   final _sharedPrefStorage = SharedPrefDataProvider();
-  final _apiClient = ApiClient();
+  final _accountApiClient = AccountApiClient();
+  final _movieApiClient = MovieApiClient();
   MovieDetail? _movieDetails;
   bool _isFavorite = false;
   String _sessionId = '';
@@ -41,7 +43,7 @@ class MovieDetailsWidgetModel extends ChangeNotifier {
 
     if (accountId == null) return;
     try {
-      _isFavorite = await _apiClient.markAsFavorite(
+      _isFavorite = await _accountApiClient.markAsFavorite(
         mediaType: mediaType.movie,
         mediaId: movieId,
         favorite: !_isFavorite,
@@ -107,11 +109,11 @@ class MovieDetailsWidgetModel extends ChangeNotifier {
   }
 
   Future<void> _loadMovieDetails() async {
-    _movieDetails = await _apiClient.movieDetails(movieId, _locale);
+    _movieDetails = await _movieApiClient.movieDetails(movieId, _locale);
     final sessionId = await _securStorage.getSessionId();
     if (sessionId != null) {
       _sessionId = sessionId;
-      _isFavorite = await _apiClient.isFavorite(movieId, sessionId);
+      _isFavorite = await _movieApiClient.isFavorite(movieId, sessionId);
     }
     notifyListeners();
   }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
-import 'package:the_movie_db/library/widgets/inherited/provider.dart';
-import 'package:the_movie_db/widgets/movie_list/movie_list_model.dart';
-import 'package:the_movie_db/widgets/movie_list/movie_list_widget.dart';
+import 'package:the_movie_db/domain/factories/screen_factories.dart';
 
 class MainScreenWidget extends StatefulWidget {
   const MainScreenWidget({Key? key}) : super(key: key);
@@ -14,7 +12,7 @@ class MainScreenWidget extends StatefulWidget {
 class _MainScreenWidgetState extends State<MainScreenWidget> {
   int _selectedTab = 1;
 
-  final movieListModel = MovieListModel();
+ 
 
   void onSelectTab(int index) async {
     if (_selectedTab == index) return;
@@ -23,17 +21,7 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
     });
   }
 
-  @override
-  void didChangeDependencies() {
-    movieListModel.setupLocale(context);
-
-    super.didChangeDependencies();
-  }
-
-  @override
-  void didUpdateWidget(covariant MainScreenWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-  }
+  final _screenFactories = ScreenFactories();
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +41,7 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
           const Text(
             'Новости',
           ),
-          NotifierProvider(
-            create: () => movieListModel,
-            isManagingModel: false,
-            child: const MovieListWidget(),
-          ),
+          _screenFactories.createMovieList(),
           const Text(
             'Сериалы',
           ),

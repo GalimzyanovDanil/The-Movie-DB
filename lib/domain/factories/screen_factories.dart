@@ -4,10 +4,11 @@ import 'package:the_movie_db/widgets/auth/auth_widget.dart';
 import 'package:the_movie_db/widgets/auth/auth_widget_model.dart';
 import 'package:the_movie_db/widgets/loader/loader_widget.dart';
 import 'package:the_movie_db/widgets/loader/loader_widget_model.dart';
-import 'package:the_movie_db/widgets/main_screen/main_screen_model.dart';
 import 'package:the_movie_db/widgets/main_screen/main_screen_widget.dart';
 import 'package:the_movie_db/widgets/movie_details/movie_details_model.dart';
 import 'package:the_movie_db/widgets/movie_details/movie_details_widget.dart';
+import 'package:the_movie_db/widgets/movie_list/movie_list_model.dart';
+import 'package:the_movie_db/widgets/movie_list/movie_list_widget.dart';
 import 'package:the_movie_db/widgets/movie_trailer/movie_trailer_model.dart';
 import 'package:the_movie_db/widgets/movie_trailer/movie_trailer_widget.dart';
 
@@ -21,9 +22,14 @@ class ScreenFactories {
   }
 
   Widget createMain() {
-    return ChangeNotifierProvider<MainScreenWidgetModel>(
-      create: (context) => MainScreenWidgetModel(),
-      child: const MainScreenWidget(),
+    return const MainScreenWidget();
+  }
+
+  Widget createMovieList() {
+    return ChangeNotifierProvider<MovieListWidgetModel>(
+      create: (context) => MovieListWidgetModel(context),
+      child: const MovieListWidget(),
+      lazy: false,
     );
   }
 
@@ -47,8 +53,4 @@ class ScreenFactories {
       child: const AuthWidget(),
     );
   }
-
- 
-
-  
 }
