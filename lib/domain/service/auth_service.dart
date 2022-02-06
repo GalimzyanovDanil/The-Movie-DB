@@ -68,4 +68,9 @@ class AuthService {
     final sessionId = await _sessionDataProvider.getSessionId();
     return sessionId != null;
   }
+
+  Future<void> logout() async {
+    await _sessionDataProvider.clearSessionId();
+    await _sharedPrefDataProvider.delete(SharedPrefKey.accountId);
+  }
 }

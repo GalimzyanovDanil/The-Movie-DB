@@ -48,6 +48,7 @@ class MovieListWidgetModel extends ChangeNotifier {
         } else {
           movies = await _movieService.searchMovies(page, _locale, searchQuery);
         }
+        _exceptionMessage = _movieService.exceptionMessage;
         return PaginatorLoadResult<Movie>(
           data: movies?.movies,
           currentPage: movies?.page,
@@ -92,7 +93,7 @@ class MovieListWidgetModel extends ChangeNotifier {
       );
       jumpTo = false;
     }
-    _exceptionMessage = null;
+   
     notifyListeners();
   }
 
@@ -113,7 +114,7 @@ class MovieListWidgetModel extends ChangeNotifier {
   }
 
   void showSnackBar() {
-    if (exceptionMessage != null) {
+    if (_exceptionMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(_snackBar);
     } else {
       return;
